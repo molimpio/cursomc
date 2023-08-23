@@ -18,8 +18,22 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootRun {
+	systemProperty 'spring.devtools.restart.enabled', 'true'
+	systemProperty 'spring.devtools.livereload.enabled', 'true'
+	systemProperty 'spring.devtools.restart.additional-exclude', 'static/**,public/**'
+	systemProperty 'spring.devtools.restart.additional-paths', 'src/main/java'
+	if (project.hasProperty('intellij-hotfix')) {
+		// Executa o aplicativo sem um processo filho (para evitar problemas de recarregamento)
+		if (project.findProperty('springBoot.run.fork') == null) {
+			project.ext['springBoot.run.fork'] = false
+		}
+	}
 }
